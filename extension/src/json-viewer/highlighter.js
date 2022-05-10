@@ -11,6 +11,7 @@ require('codemirror/mode/javascript/javascript');
 var merge = require('./merge');
 var defaults = require('./options/defaults');
 var URL_PATTERN = require('./url-pattern');
+var FHIR_PATTERN = require('./fhir-pattern');
 var F_LETTER = 70;
 
 function Highlighter(jsonText, options) {
@@ -86,8 +87,11 @@ Highlighter.prototype = {
 
       var text = self.removeQuotes(textContent);
 
-      if (text.match(URL_PATTERN) && self.clickableUrls()) {
-        var decodedText = self.decodeText(text);
+      let isURL = text.match(URL_PATTERN)
+      let isFHIR = text.match(FHIR_PATTERN)
+
+      if ((isURL || isFHIR) && self.clickableUrls()) {
+        var decodedText = self.decodeText(text, isFHIR);
         elements.forEach(function(node) {
           if (self.wrapLinkWithAnchorTag()) {
             var linkTag = document.createElement("a");
@@ -139,9 +143,9 @@ Highlighter.prototype = {
     return "\"" + text + "\"";
   },
 
-  decodeText: function(text) {
+  decodeText: function(text, isFHIR) {
     var div = document.createElement("div");
-    div.innerHTML = text;
+    div.innerHTML = (isFHIR) ? defaults.addons.fhirURL + text : text;
     return div.firstChild ? div.firstChild.nodeValue : "";
   },
 

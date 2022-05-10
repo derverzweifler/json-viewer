@@ -9,7 +9,8 @@ module.exports = {
     clickableUrls: true,
     wrapLinkWithAnchorTag: false,
     openLinksInNewWindow: true,
-    autoHighlight: true
+    autoHighlight: true,
+    fhirURL: "/app/FHIR/r4/"
   },
   structure: {
     readOnly: true,
